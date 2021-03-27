@@ -21,7 +21,7 @@ jobs:
           
       - name: Build
         run: |
-          docker build ./itec-frontend
+          docker build itec-frontend
 
       - name: Login to GitHub Packages Docker Registry
         uses: docker/login-action@v1
