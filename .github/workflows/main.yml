@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy
         run: |
-          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
