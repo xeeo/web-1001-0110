@@ -21,8 +21,8 @@ jobs:
           
       - name: Build
         run: |
-          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io
-          docker build -t ghcr.io/mnt/itec-frontend:latest ./itec-frontend
+          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io && \
+          docker build -t ghcr.io/mnt/itec-frontend:latest ./itec-frontend && \
           docker push ghcr.io/mnt/itec-frontend:latest
 
   deploy-frontend:
