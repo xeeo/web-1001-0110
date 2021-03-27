@@ -22,8 +22,8 @@ jobs:
       - name: Build
         run: |
           docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io && \
-          docker build -t ghcr.io/munteanu29/itec-frontend:latest ./itec-frontend && \
-          docker push ghcr.io/munteanu29/itec-frontend:latest
+          docker build -t ghcr.io/${{ github.repository_owner }}/itec-frontend:latest ./itec-frontend && \
+          docker push ghcr.io/${{ github.repository_owner }}/itec-frontend:latest
 
   deploy-frontend:
      needs: [ build-frontend ]
