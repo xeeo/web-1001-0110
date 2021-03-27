@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+env:
+  IMAGE_NAME: itec_frontend
+
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
@@ -19,11 +22,21 @@ jobs:
         with:
           install: true
           
-      - name: Build
+      - name: Build image
+        run: docker build ./itec-frontend --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Deploy
         run: |
-          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io && \
-          docker build -t ghcr.io/${{ github.repository_owner }}/itec-frontend:latest ./itec-frontend && \
-          docker push ghcr.io/${{ github.repository_owner }}/itec-frontend:latest
+          docker login -u ${{ github.repository_owner }} -p ${{ secrets.CR_PAT }} ghcr.io
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
 
   deploy-frontend:
      needs: [ build-frontend ]
